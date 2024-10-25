@@ -1,0 +1,80 @@
+\ o/ 9 INTERNATIONAL
+CANCER
+SPECIALISTS
+Serving  With Compassion
+ID: 02956
+11 Jul 2024
+PET0006,  WB FDG PETCT,  ERIS Universal  Identifier
+F-18 FLUORODEOXYGLUCOSE  PET/CT  STUDY
+CLINICAL  HISTORY
+is a 49 years old lady with ca right breast. She is status post wide excision  of the right breast in Jun
+2022 followed  by chemotherapy  from Jul till Oct 2022 and radiotherapy  in Oct 2022. She has been receiving  Tamoxifen
+since Apr 2023. PET/CT  to assess  disease  status.
+TECHNIQUE
+Positron  emission  tomographic  (PET) images,  coupled  with multi-slice  low-dose  CT scan were acquired  73 minutes  after
+intravenous  administration  of approximately  281 MBq of F-18 Fluorodeoxyglucose  (blood glucose  4.4 mmol/l).  CT was
+used for attenuation  correction  and anatomical  correlation.
+FINDINGS
+Comparison  was made with the previous  PET study of 14 June 2022.
+THORAX:
+The patient  is status post wide excision  of the right breast. Surgical  clips are seen in the right breast.
+Low-grade  physiological  glandular  FDG uptake  is noted in both breasts.
+The density  of low-grade  activity  in the lower outer quadrant  of the right breast (im 3/174, maxSUV  1.7) is more in keeping
+with post-surgical  change.
+
+The low-grade  to mildly FDG-avid  cutaneous  thickening  overlying  the right breast is also in keeping  with post-treatment
+change.
+No abnormal  FDG-avid  focus is seen in the left breast.
+The right axillary  nodes of negligible  to low-grade  activity  are more in keeping  with reactive  nodes (maxSUV  1.7).
+No FDG-avid  internal  mammary  or mediastinal  nodes are noted.
+The left axillary  nodes, bilateral  subcentimeter  lower paratracheal  nodes and subcentimeter  aortopulmonary  window  node
+of negligible  to low-grade  activity  are more in keeping  with reactive  nodes.
+No abnormal  FDG-avid  focus is detected  in both lungs.
+The subcentimeter  nodule  in the left lung apex (im 3/111) is most likely too small to be accurately  resolved  on PET and is
+indeterminate.
+Mild scarring  is noted in the right lung apex, right upper lobe and right middle  lobe. No pleural  effusion  or pericardial
+effusion  is seen.
+Low-grade  to mild physiological  brown fat FDG uptake  is noted in the thoracic  paravertebral  fat planes.
+HEAD  AND NECK:
+No FDG-avid  supraclavicular  nodes are noted.
+The mildly FDG-avid  right level Il cervical  node and left level II cervical  node (maxSUV  2.5) are most likely inflammatory  in
+origin.
+The other bilateral  cervical  nodes and bilateral  submandibular  nodes  of negligible  to low-grade  activity  as well as the non
+FDG-avid  subcentimeter  submental  nodes are compatible  with reactive  nodes.
+No abnormal  FDG-avid  focus is detected  in the cerebral  hemispheres  or cerebellum.  The paranasal  sinuses  and mastoids
+are clear.
+The low-grade  to intensely  increased  FDG activity  involving  both sides of the nasopharynx,  the soft palate, bilateral
+palatine  tonsils,  base of tongue,  hypopharynx,  bilateral  aryepiglottic  folds, bilateral  vocal cords, bilateral  parotid  glands,
+bilateral  submandibular  glands  and thyroid  gland is more likely to be physiological  or inflammatory  in origin.
+SKELETAL  SYSTEM  AND SOFT  TISSUE:
+The bone marrow  shows normal physiological  distribution  of FDG activity.
+No abnormal  FDG-avid  skeletal  focus is detected.  The non FDG-avid  sclerotic  skeletal  foci in bilateral  femoral  heads are
+most likely bone islands.
+The low-grade  to mildly increased  activity  involving  bilateral  shoulder  regions  and the right sternoclavicular  joint  as well as
+adjacent  to the right greater  trochanter  is most likely inflammatory  in origin.
+ABDOMEN  AND PELVIS:
+The low-grade  to mildly increased  gastric  activity  is most likely physiological  in origin.
+
+The segmental  low-grade  to mildly increased  activity  along the sigmoid  colon, rectum  and small bowel loops is more in
+keeping  with physiological  bowel uptake.
+There are no FDG-avid  intra-abdominal,  retroperitoneal  or pelvic nodes.
+The subcentimeter  ileocolic  nodes, subcentimeter  superior  mesenteric  nodes, subcentimeter  aortocaval  node,
+subcentimeter  para-aortic  nodes, bilateral  subcentimeter  common  iliac nodes, bilateral  external  iliac nodes  and bilateral
+inguinal  nodes of negligible  to low-grade  activity  are in keeping  with reactive  nodes.
+The subcentimeter  hypodensity  in segment  II of the liver is too small to be accurately  characterised.  No abnormal  FDG-
+avid focus is noted in the liver.
+The subcentimeter  hypodensity  in the pancreas  is stable. No abnormal  FDG-avid  focus is seen in the pancreas.
+No ascites  or FDG-avid  peritoneal  nodule  is noted. No abnormal  FDG-avid  focus is seen in the spleen,  adrenal  glands,
+adnexal  regions  and uterus.
+A tiny left renal calculus  is noted but no hydronephrosis  is present.  The right renal hypodensity  is most likely a cyst.
+Physiological  urinary  activity  is seen along the urethra.
+CLINICAL  IMPRESSION
+The density  of low-grade  activity  in the lower outer quadrant  of the right breast  is more in keeping  with post-surgical
+change.
+The right axillary  nodes  of negligible  to low-grade  activity  are more in keeping  with reactive  nodes. Follow-up  is advised.
+There is no scan evidence  of FDG-avid  recurrent  malignancy  detected  elsewhere.
+Reported  by: DR GILBERT  KENG
+Reported  on: 11-07-2024
+View Study |
+Electronically  signed by drooi on 11 Jul 2024,
+

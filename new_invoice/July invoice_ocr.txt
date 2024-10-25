@@ -1,0 +1,36 @@
+Tax Invoice
+Provider:  DR OO! WEI SEONG
+Item
+Chemotherapy
+FEMARA  2.5MG ORAL
+Consultation
+FOLLOW  UP CONSULT
+Lab
+ICS 3
+CA 15.3
+MENOPAUSAL  PROFILE  (FSH/LH/E2)  ME01
+VITAMIN  D IMMUNOASSAY
+Radiology
+FDG PET-CT  SCAN @RADLINK
+Notes: CLAIM  APPROVED  ON 12/07/2024  OF $3379.00
+AVIVA-SINGLIFE
+PlatoPay  - Mastercard  5459
+Outstanding  Balance:  $0.00$3,379.00
+$375.45QtyInvoice #21450
+Date 11/07/2024
+Ref No 02956
+Unit Cost Sub Total
+$508.98 $508.98
+$90.00 $90.00
+$121.00 $121.00
+$55.00 $55.00
+$104.50 $104.50
+$165.00 $165.00
+$2,400.00 $2,400.00
+Sub-Total: $3,444.48
+GST 9%: $310.00
+Adjustment: ($0.03)
+Total: $3,754.45
+11 Jul 2024
+16 Jul 2024
+
