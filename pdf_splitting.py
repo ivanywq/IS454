@@ -16,25 +16,42 @@ def classify_page_with_chatgpt(page_text):
             print('everything viewed as empty.')
             return "Medical Report"  # Default classification for empty pages
 
-        # Improved prompt to force classification
         prompt = (
-            "You are a document classification assistant. Your job is to categorize the given text "
-            "into one of the following categories: \n"
+            "You are a highly advanced document classification assistant. Your task is to categorize the following page text into one of four categories: "
             "1. Bill Audit Form\n"
             "2. Invoice\n"
             "3. Letter of Guarantee\n"
             "4. Medical Report\n\n"
-            "Below are examples of each type:\n"
-            "Bill Audit Form: This document contains information related to the auditing of a medical bill, "
-            "such as patient details, itemized charges, and audit notes.\n"
-            "Invoice: This document contains billing information, including line items, prices, discounts, and total amounts.\n"
-            "Letter of Guarantee: This document is usually a formal letter ensuring payment or coverage, including names of guarantors, conditions, and details of the guarantee.\n"
-            "Medical Report: This document contains medical information, including diagnosis, treatment, doctor's notes, and prescribed medications.\n\n"
-            "Your task is to read the following page text and determine the most appropriate category for it. "
-            "You must choose one of the four categories (Bill Audit Form, Invoice, Letter of Guarantee, Medical Report). "
-            "Please make the best choice, even if it requires an educated guess. If you are unsure, choose 'Medical Report'.\n\n"
+            "Carefully analyze the provided text and categorize it based on the following detailed guidelines:\n\n"
+            "**Bill Audit Form**:\n"
+            "- Primarily focuses on **auditing** medical bills.\n"
+            "- Includes **patient details**, **itemized charges**, and **audit notes**.\n"
+            "- Look for terms like 'audit', 'reconciliation', 'review', 'charges audited', or 'summary of charges'.\n"
+            "- **Important**: If the text starts with a company stamp, hospital logo, or hospital name, this document is **less likely** to be a Bill Audit Form.\n\n"
+            "**Invoice**:\n"
+            "- Used for **billing purposes**, listing items, prices, discounts, and total amounts.\n"
+            "- Should contain key terms like **'Invoice Number'**, **'Tax Invoice'**, **'Due Date'**, or **'Payment Due'**.\n"
+            "- Typically focuses on **payment information**.\n"
+            "- If the document starts with a **hospital stamp or logo**, consider this first as an Invoice rather than a Bill Audit Form, particularly if billing-related keywords are present.\n"
+            "- **Important**: Do not classify documents with lists of consumables, medical supplies, or inventory items as Invoice; instead, categorize them as Medical Report.\n\n"
+            "**Letter of Guarantee**:\n"
+            "- A formal document ensuring **payment or coverage** from an insurer or healthcare provider.\n"
+            "- Look for terms like 'guarantee', 'coverage', 'guarantor', 'terms of coverage', or 'formal letter'.\n"
+            "- Typically includes **names, conditions, and guarantees**.\n\n"
+            "**Medical Report**:\n"
+            "- Contains detailed medical information such as **diagnosis**, **treatment**, **clinical notes**, and **patient history**.\n"
+            "- Look for terms like 'diagnosis', 'treatment plan', 'medical history', 'clinical notes', or 'symptoms'.\n"
+            "- Usually includes **doctor’s notes**, **patient health information**, or **treatment details**.\n"
+            "- **Important**: If the document contains consumable lists, medical supplies, or references to items used during treatment, categorize it as Medical Report.\n\n"
+            "To classify each page:\n"
+            "1. Analyze the **overall context** of the text, including phrases, sections, and headers.\n"
+            "2. Pay close attention to **key terms** and **the absence of expected words** (e.g., missing 'Tax Invoice' should raise suspicion of a misclassification).\n"
+            "3. If the document starts with a **hospital name, logo, or stamp**, it is more likely to be an **Invoice** or **Medical Report**.\n"
+            "4. If unsure and if the text includes **hospital-related information** but lacks clear audit or billing indicators, consider classifying it as a **Medical Report**.\n\n"
+            "**Important**: Provide **only** the category name (Bill Audit Form, Invoice, Letter of Guarantee, Medical Report). Do not provide any additional text or explanation.\n\n"
+            "Here is the text for classification:\n"
             f"Text: {page_text}\n\n"
-            "Please provide only the category name as your answer."
+            "Provide only the category name."
         )
 
         # Make a request to the ChatGPT API using the client
@@ -45,7 +62,7 @@ def classify_page_with_chatgpt(page_text):
                     "content": prompt,
                 }
             ],
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             max_tokens=20,
         )
 
