@@ -137,8 +137,25 @@ def split_pdf_by_classification(input_pdf_path, output_directory):
 
     input_pdf.close()
 
-# Example usage
+# Example usage for single file
 input_pdf_path = "test_pdf_splitting/1193 - 20-02_ocr.pdf"  # Specify the path to your PDF
 output_directory = "test_pdf_splitting/output"  # Specify the path for output PDFs
 os.makedirs(output_directory, exist_ok=True)
 split_pdf_by_classification(input_pdf_path, output_directory)
+
+
+# Example usage for all files in a folder
+def process_all_pdfs_in_folder(input_folder, output_folder):
+    os.makedirs(output_folder, exist_ok=True)
+
+    for filename in os.listdir(input_folder):
+        if filename.endswith(".pdf"):
+            input_pdf_path = os.path.join(input_folder, filename)
+            print(f"Processing {input_pdf_path}")
+            split_pdf_by_classification(input_pdf_path, output_folder)
+
+# # Example usage
+# input_folder = "test_pdf_splitting"  # Path to folder containing PDFs
+# output_folder = "test_pdf_splitting/output_folder"  # Path for the classified output PDFs
+
+# process_all_pdfs_in_folder(input_folder, output_folder)
