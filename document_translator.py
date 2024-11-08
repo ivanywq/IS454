@@ -60,25 +60,48 @@ class InvoiceExtractor(DocumentExtractor):
         response = response.strip("```").strip()  # Remove markdown symbols and whitespace
         print("Raw response from ChatGPT:", response)
 
-        # Remove any trailing lines that don't match CSV format
-        cleaned_response = "\n".join([line for line in response.splitlines() if "," in line])
+        # Add quotes around Drug_Name entries with commas, ensuring robust CSV formatting
+        cleaned_response = []
+        for line in response.splitlines():
+            if line.count(",") >= 3:  # Ensure the line has at least 4 fields (Transaction_ID, Drug_Name, Quantity, Date)
+                parts = line.split(',')
+                
+                # Assume that the Drug_Name field may contain commas, so handle it accordingly
+                transaction_id = parts[0].strip()
+                drug_name = ",".join(parts[1:-2]).strip()  # Join all middle parts as Drug_Name
+                quantity = parts[-2].strip()
+                date_administered = parts[-1].strip()
+
+                # Quote drug_name if it contains commas
+                if "," in drug_name:
+                    drug_name = f'"{drug_name}"'
+
+                cleaned_line = f"{transaction_id},{drug_name},{quantity},{date_administered}"
+                cleaned_response.append(cleaned_line)
+            else:
+                # Skip lines that don't match expected CSV format
+                continue
+
+        # Join cleaned lines into the final CSV-compatible string
+        cleaned_response = "\n".join(cleaned_response)
 
         # Try to parse the CSV-like output directly
         try:
-            csv_data = pd.read_csv(StringIO(cleaned_response))
+            csv_data = pd.read_csv(StringIO(cleaned_response), quotechar='"')
             return csv_data
         except pd.errors.ParserError as e:
             print("Error parsing CSV response:", e)
             return None
 
-    def to_csv(self):
+    def to_csv(self, output_folder):
         # Get the output filename based on input filename
         base_name = os.path.splitext(os.path.basename(self.pdf_path))[0]
-        output_csv_path = f"{base_name}_extracted.csv"
+        output_csv_path = os.path.join(output_folder,f"{base_name}_extracted.csv")
         
         extracted_data = self.extract_info()
         
         if extracted_data is not None and not extracted_data.empty:
+            os.makedirs(output_folder, exist_ok=True)
             extracted_data.to_csv(output_csv_path, index=False)
             print(f"Data successfully saved to {output_csv_path}")
         else:
@@ -130,14 +153,32 @@ class MedicalReportExtractor(DocumentExtractor):
         return self._call_chatgpt(prompt)
 
 # Example usage
-def classify_and_extract_to_csv(pdf_path, document_type):
+def classify_and_extract_to_csv(pdf_path, document_type, output_folder):
     if document_type == "Invoice":
         extractor = InvoiceExtractor(pdf_path)
-        extractor.to_csv()
+        extractor.to_csv(output_folder)
     else:
         print("Unknown document type")
 
-# Example call
-pdf_path = "test_pdf_splitting/output/1193 - 20-02_ocr_Invoice.pdf"
+def process_all_pdfs_in_folder(input_folder,document_type, output_folder):
+    for filename in os.listdir(input_folder):
+        if filename.endswith(".pdf"):
+            pdf_path = os.path.join(input_folder, filename)
+            print(f"Processing {pdf_path}...")
+            classify_and_extract_to_csv(pdf_path, document_type, output_folder)
+        else:
+            print(f"Skipping non-PDF file: {filename}")
+
+## Example call for 1 document
+
+# pdf_path = "test_pdf_splitting/invoice_output/1216 - 20-02_ocr_Invoice.pdf"
+# document_type = "Invoice"
+# output_folder = 'extracted_csv'
+# classify_and_extract_to_csv(pdf_path, document_type, output_folder)
+
+## Example usage for folders
+
+input_folder = "test_pdf_splitting/invoice_output"
 document_type = "Invoice"
-classify_and_extract_to_csv(pdf_path, document_type)
+output_folder = 'extracted_csv/invoice'
+process_all_pdfs_in_folder(input_folder, document_type, output_folder)
