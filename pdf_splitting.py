@@ -154,8 +154,8 @@ def process_all_pdfs_in_folder(input_folder, output_folder):
             print(f"Processing {input_pdf_path}")
             split_pdf_by_classification(input_pdf_path, output_folder)
 
-# # Example usage
-# input_folder = "test_pdf_splitting"  # Path to folder containing PDFs
-# output_folder = "test_pdf_splitting/output_folder"  # Path for the classified output PDFs
+# Example usage
+input_folder = "test_pdf_splitting/input"  # Path to folder containing PDFs
+output_folder = "test_pdf_splitting/output"  # Path for the classified output PDFs
 
-# process_all_pdfs_in_folder(input_folder, output_folder)
+process_all_pdfs_in_folder(input_folder, output_folder)
