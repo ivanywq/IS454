@@ -24,16 +24,16 @@ def classify_page_with_chatgpt(page_text):
             "4. Medical Report\n\n"
             "Carefully analyze the provided text and categorize it based on the following detailed guidelines:\n\n"
             "**Bill Audit Form**:\n"
-            "- Primarily focuses on **auditing** medical bills.\n"
-            "- Includes **patient details**, **itemized charges**, and **audit notes**.\n"
-            "- Look for terms like 'audit', 'reconciliation', 'review', 'charges audited', or 'summary of charges'.\n"
-            "- **Important**: If the text starts with a company stamp, hospital logo, or hospital name, this document is **less likely** to be a Bill Audit Form.\n\n"
+            "- Contains notes or comments specifically regarding **auditing** or **verifying** charges on medical bills.\n"
+            "- Often includes **patient details**, **itemized charges**, and **audit notes**.\n"
+            "- Look for terms like 'audit', 'reconciliation', 'review', 'charges audited', 'summary of charges', 'quantity', 'charged', 'why so many', or 'charges correct'.\n"
+            "- **Important**: If the text includes phrases like 'Revise invoice', 'It is correct', or audit-related questions (e.g., 'why so many?', 'is the charge correct?'), this is likely a Bill Audit Form rather than an Invoice.\n\n"
             "**Invoice**:\n"
-            "- Used for **billing purposes**, listing items, prices, discounts, and total amounts.\n"
-            "- Should contain key terms like **'Invoice Number'**, **'Tax Invoice'**, **'Due Date'**, or **'Payment Due'**.\n"
-            "- Typically focuses on **payment information**.\n"
-            "- If the document starts with a **hospital stamp or logo**, consider this first as an Invoice rather than a Bill Audit Form, particularly if billing-related keywords are present.\n"
-            "- **Important**: Do not classify documents with lists of consumables, medical supplies, or inventory items as Invoice; instead, categorize them as Medical Report.\n\n"
+            "- Any document labeled as a **Tax Invoice** should be classified as an Invoice, regardless of the specific items or services listed.\n"
+            "- Primarily used for **billing purposes**, listing items, prices, discounts, and total amounts.\n"
+            "- Includes billing-related details like **hospital charges**, **consumables**, **bed charges**, or other general medical service fees.\n"
+            "- Look for terms like **'Invoice Number'**, **'Due Date'**, or **'Payment Due'**.\n"
+            "- Excludes detailed audit-specific comments but may include general notes for billing accuracy.\n\n"
             "**Letter of Guarantee**:\n"
             "- A formal document ensuring **payment or coverage** from an insurer or healthcare provider.\n"
             "- Look for terms like 'guarantee', 'coverage', 'guarantor', 'terms of coverage', or 'formal letter'.\n"
@@ -42,12 +42,11 @@ def classify_page_with_chatgpt(page_text):
             "- Contains detailed medical information such as **diagnosis**, **treatment**, **clinical notes**, and **patient history**.\n"
             "- Look for terms like 'diagnosis', 'treatment plan', 'medical history', 'clinical notes', or 'symptoms'.\n"
             "- Usually includes **doctor’s notes**, **patient health information**, or **treatment details**.\n"
-            "- **Important**: If the document contains consumable lists, medical supplies, or references to items used during treatment, categorize it as Medical Report.\n\n"
+            "- If the document contains consumable lists, medical supplies, or references to items used during treatment without billing or invoice details, categorize it as Medical Report.\n\n"
             "To classify each page:\n"
             "1. Analyze the **overall context** of the text, including phrases, sections, and headers.\n"
-            "2. Pay close attention to **key terms** and **the absence of expected words** (e.g., missing 'Tax Invoice' should raise suspicion of a misclassification).\n"
-            "3. If the document starts with a **hospital name, logo, or stamp**, it is more likely to be an **Invoice** or **Medical Report**.\n"
-            "4. If unsure and if the text includes **hospital-related information** but lacks clear audit or billing indicators, consider classifying it as a **Medical Report**.\n\n"
+            "2. If the text mentions 'Tax Invoice', classify it as an **Invoice**.\n"
+            "3. Pay attention to **key terms** and **the absence of expected words** (e.g., missing 'Tax Invoice' should raise suspicion of a misclassification).\n\n"
             "**Important**: Provide **only** the category name (Bill Audit Form, Invoice, Letter of Guarantee, Medical Report). Do not provide any additional text or explanation.\n\n"
             "Here is the text for classification:\n"
             f"Text: {page_text}\n\n"
@@ -138,10 +137,10 @@ def split_pdf_by_classification(input_pdf_path, output_directory):
     input_pdf.close()
 
 # Example usage for single file
-input_pdf_path = "test_pdf_splitting/1193 - 20-02_ocr.pdf"  # Specify the path to your PDF
-output_directory = "test_pdf_splitting/output"  # Specify the path for output PDFs
-os.makedirs(output_directory, exist_ok=True)
-split_pdf_by_classification(input_pdf_path, output_directory)
+# input_pdf_path = "test_pdf_splitting/1193 - 20-02_ocr.pdf"  # Specify the path to your PDF
+# output_directory = "test_pdf_splitting/output"  # Specify the path for output PDFs
+# os.makedirs(output_directory, exist_ok=True)
+# split_pdf_by_classification(input_pdf_path, output_directory)
 
 
 # Example usage for all files in a folder
@@ -156,6 +155,6 @@ def process_all_pdfs_in_folder(input_folder, output_folder):
 
 # Example usage
 input_folder = "test_pdf_splitting/input"  # Path to folder containing PDFs
-output_folder = "test_pdf_splitting/output"  # Path for the classified output PDFs
+output_folder = "test_pdf_splitting/new_output"  # Path for the classified output PDFs
 
 process_all_pdfs_in_folder(input_folder, output_folder)
