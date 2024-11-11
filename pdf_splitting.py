@@ -126,6 +126,7 @@ def split_pdf_by_classification(input_pdf_path, output_directory):
         # Create the output path with the modified file name
         output_filename = f"{input_filename}_{category.replace(' ', '_')}.pdf"
         output_path = os.path.join(output_directory, output_filename)
+       
         
         try:
             with open(output_path, "wb") as output_pdf:
@@ -153,8 +154,8 @@ def process_all_pdfs_in_folder(input_folder, output_folder):
             print(f"Processing {input_pdf_path}")
             split_pdf_by_classification(input_pdf_path, output_folder)
 
-# Example usage
-input_folder = "test_pdf_splitting/input"  # Path to folder containing PDFs
-output_folder = "test_pdf_splitting/new_output"  # Path for the classified output PDFs
+# # Example usage
+# input_folder = "test_pdf_splitting/input"  # Path to folder containing PDFs
+# output_folder = "test_pdf_splitting/new_output"  # Path for the classified output PDFs
 
-process_all_pdfs_in_folder(input_folder, output_folder)
+# process_all_pdfs_in_folder(input_folder, output_folder)

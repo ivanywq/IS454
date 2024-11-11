@@ -6,9 +6,10 @@ from ctypes.util import find_library
 find_library("gs")
 
 def generate_ocr_files(input_folder_path, output_folder_path):
+    os.makedirs(output_folder_path, exist_ok=True)
+    
     file_list = []
 
-    input_folder_path = os.path.join(os.getcwd(), 'old_invoice')
     for filename in os.listdir(input_folder_path):
         if filename.endswith("pdf"):
             file_list.append(filename)
