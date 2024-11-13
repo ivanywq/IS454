@@ -4,6 +4,12 @@ from openai import OpenAI
 import pandas as pd
 from io import StringIO
 from collections import defaultdict
+import unicodedata  # Import for non-ASCII character handling
+
+# Function to remove non-ASCII characters
+def remove_non_ascii(text):
+    # Normalize text to decompose characters with accents into ASCII-compatible characters
+    return unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
 
 class DocumentExtractor:
     def __init__(self, pdf_path):
@@ -68,14 +74,27 @@ class InvoiceExtractor(DocumentExtractor):
     def extract_info(self):
         base_name = os.path.basename(self.pdf_path)
         patient_id = base_name.split('_')[0].strip()  # Extract the first part of the filename
+        # prompt = (
+        #     "You are a document processing assistant. Extract information specifically for an Invoice.\n"
+        #     "Identify and extract the following details in CSV format with exactly these columns:\n"
+        #     "- Transaction_ID (Use 'NA' if no transaction ID is available)\n"
+        #     "- Drug/Services (This should include specific drugs, medications, warding details, medical procedures, scans, x-rays, etc., and should exclude generic terms such as 'Pharmacy Invoice' or 'Inpatient Invoice')\n"
+        #     "- Quantity associated with each item\n"
+        #     "- Date associated with each entry, in DD.MM.YYYY format (leave blank if not available)\n\n"
+        #     "Only include rows where 'Drug/Services' refers to a specific drug or service. Do not include entries with generic terms such as 'Pharmacy Invoice' or 'Inpatient Invoice' in the 'Drug/Services' column.\n\n"
+        #     "Provide the output in a CSV format with these columns in this order: Transaction_ID, Drug/Services, Quantity, Date.\n"
+        #     f"Here is the text:\n{self.text}\n"
+        #     "Return only the CSV content with no extra explanations or commentary."
+        # )
+
         prompt = (
             "You are a document processing assistant. Extract information specifically for an Invoice.\n"
             "Identify and extract the following details in CSV format with exactly these columns:\n"
             "- Transaction_ID (Use 'NA' if no transaction ID is available)\n"
-            "- Drug/Services (This should include specific drugs, medications, warding details, medical procedures, scans, x-rays, etc., and should exclude generic terms such as 'Pharmacy Invoice' or 'Inpatient Invoice')\n"
+            "- Drug/Services (This should include specific drugs, medications, but exclude warding details, medical services, medical procedures, scans, x-rays, dressings, etc., and should exclude generic terms such as 'Pharmacy Invoice' or 'Inpatient Invoice')\n"
             "- Quantity associated with each item\n"
             "- Date associated with each entry, in DD.MM.YYYY format (leave blank if not available)\n\n"
-            "Only include rows where 'Drug/Services' refers to a specific drug or service. Do not include entries with generic terms such as 'Pharmacy Invoice' or 'Inpatient Invoice' in the 'Drug/Services' column.\n\n"
+            "Only include rows where 'Drug/Services' refers to a specific drug. Do not include entries with generic terms such as 'Pharmacy Invoice' or 'Inpatient Invoice' in the 'Drug/Services' column.\n\n"
             "Provide the output in a CSV format with these columns in this order: Transaction_ID, Drug/Services, Quantity, Date.\n"
             f"Here is the text:\n{self.text}\n"
             "Return only the CSV content with no extra explanations or commentary."
@@ -152,6 +171,18 @@ class MedicalReportExtractor(DocumentExtractor):
             # Use the 'quotechar' parameter to handle any quotes around Diagnosis or Diagnosis Type
             csv_data = pd.read_csv(StringIO(response), quotechar='"')
             csv_data["patient_id"] = patient_id  # Add patient_id column
+             
+            # Assign Diagnosis Type to "NA" if not found
+            if "Diagnosis Type" not in csv_data.columns:
+                csv_data["Diagnosis Type"] = "NA"
+
+            if "Diagnosis" not in csv_data.columns:
+                csv_data["Diagnosis"] = "NA"
+
+            # **Apply remove_non_ascii to the Diagnosis column**
+            if "Diagnosis" in csv_data.columns:
+                csv_data["Diagnosis"] = csv_data["Diagnosis"].apply(remove_non_ascii)
+
             print("Medical Report Data successfully extracted and stored in DataFrame.")
             print(csv_data)  # Print the DataFrame for verification
             return csv_data
@@ -221,6 +252,7 @@ def process_and_combine(pdfs_folder, output_folder):
             # Ensure columns are correctly formatted
             invoice_df["patient_id"] = invoice_df["patient_id"].astype(str)
             medical_report_df["patient_id"] = medical_report_df["patient_id"].astype(str)
+            invoice_df['Quantity'] = pd.to_numeric(invoice_df['Quantity'], errors='coerce').fillna(0).astype(int)
 
             # Merge on patient_id and save as a single CSV
             combined_df = pd.merge(invoice_df, medical_report_df, on="patient_id", how="outer")
@@ -233,7 +265,7 @@ def process_and_combine(pdfs_folder, output_folder):
             print(f"Skipping combination for patient ID {patient_id}: Missing either Invoice or Medical Report.")
 
 
-# Example usage for all PDFs in a folder
-pdfs_folder = "test_pdf_splitting/new_output_test"
-output_folder = 'extracted_csv'
-process_and_combine(pdfs_folder, output_folder)
+# # Example usage for all PDFs in a folder
+# pdfs_folder = "test_pdf_splitting/new_output_test"
+# output_folder = 'extracted_csv'
+# process_and_combine(pdfs_folder, output_folder)
