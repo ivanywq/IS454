@@ -3,14 +3,19 @@ from pdf_splitting import process_all_pdfs_in_folder
 from document_translator import process_and_combine
 from combine_extracted_csv import combine_csv_files
 from datetime import datetime
+import argparse
 
-input_dir = 'test'
-output_dir = 'test_output'
-ocr_output_dir = f'{output_dir}/ocr_files'
-split_pdf_dir = f'{output_dir}/split_pdfs'
-extracted_csv_dir = f'{output_dir}/extracted_csv'
+# input_dir = 'input_files'
+# output_dir = 'output_files'
+# ocr_output_dir = f'{output_dir}/ocr_files'
+# split_pdf_dir = f'{output_dir}/split_pdfs'
+# extracted_csv_dir = f'{output_dir}/extracted_csv'
 
-def main():
+def main(input_dir, output_dir):
+    ocr_output_dir = f'{output_dir}/ocr_files'
+    split_pdf_dir = f'{output_dir}/split_pdfs'
+    extracted_csv_dir = f'{output_dir}/extracted_csv'
+
     start_time = datetime.now()
     
     generate_ocr_files(input_dir, ocr_output_dir)
@@ -24,6 +29,10 @@ def main():
     elapsed_time = end_time - start_time
     print(f"Elapsed time: {elapsed_time}")
 
-
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Process some files.')
+    parser.add_argument('--input_dir', type=str, required=True, help='The input directory where your raw pdf files will be stored.')
+    parser.add_argument('--output_dir', type=str, required=True, help='The output directory where the extracted.csv files will be stored.')
+    args = parser.parse_args()
+    
+    main(args.input_dir, args.output_dir)
