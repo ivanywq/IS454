@@ -1,7 +1,8 @@
-import fitz  # PyMuPDF for text extraction
-import PyPDF2
 import os
 import time
+
+import fitz  # PyMuPDF for text extraction
+import PyPDF2
 from openai import OpenAI
 
 # Set your OpenAI API key
@@ -10,10 +11,11 @@ api_key = os.getenv("OPENAI_API_KEY")
 # Create the OpenAI client instance
 client = OpenAI(api_key=api_key)
 
+
 def classify_page_with_chatgpt(page_text):
     try:
         if not page_text.strip():
-            print('everything viewed as empty.')
+            print("everything viewed as empty.")
             return "Medical Report"  # Default classification for empty pages
 
         prompt = (
@@ -66,7 +68,7 @@ def classify_page_with_chatgpt(page_text):
         )
 
         # Extract response content
-        if chat_completion and hasattr(chat_completion, 'choices'):
+        if chat_completion and hasattr(chat_completion, "choices"):
             response_content = chat_completion.choices[0].message.content.strip()
             return response_content
         else:
@@ -76,6 +78,7 @@ def classify_page_with_chatgpt(page_text):
     except Exception as e:
         print(f"Error during classification: {e}")
         return "Medical Report"  # Default classification in case of an error
+
 
 def split_pdf_by_classification(input_pdf_path, output_directory):
     # Extract the base name of the input PDF file without extension
@@ -126,8 +129,7 @@ def split_pdf_by_classification(input_pdf_path, output_directory):
         # Create the output path with the modified file name
         output_filename = f"{input_filename}_{category.replace(' ', '_')}.pdf"
         output_path = os.path.join(output_directory, output_filename)
-       
-        
+
         try:
             with open(output_path, "wb") as output_pdf:
                 pdf_writer.write(output_pdf)
@@ -136,6 +138,7 @@ def split_pdf_by_classification(input_pdf_path, output_directory):
             print(f"Error writing {category} to file: {e}")
 
     input_pdf.close()
+
 
 # Example usage for single file
 # input_pdf_path = "test_pdf_splitting/1193 - 20-02_ocr.pdf"  # Specify the path to your PDF
@@ -153,6 +156,7 @@ def process_all_pdfs_in_folder(input_folder, output_folder):
             input_pdf_path = os.path.join(input_folder, filename)
             print(f"Processing {input_pdf_path}")
             split_pdf_by_classification(input_pdf_path, output_folder)
+
 
 # # Example usage
 # input_folder = "test_pdf_splitting/input"  # Path to folder containing PDFs

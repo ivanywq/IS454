@@ -37,3 +37,5 @@ To begin processing, make sure you enter your ChatGPT API Key into the environme
     ```python main.py --input_dir=input_files --output_dir=output_files```
 
 4. Navigate to your output folder and retrieve your compiled extracted .csv file. 
+
+5. Use the exported .csv file as input to your models on SAS Viya.

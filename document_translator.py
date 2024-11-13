@@ -1,15 +1,18 @@
-import fitz  # PyMuPDF for text extraction
 import os
-from openai import OpenAI
-import pandas as pd
-from io import StringIO
-from collections import defaultdict
 import unicodedata  # Import for non-ASCII character handling
+from collections import defaultdict
+from io import StringIO
+
+import fitz  # PyMuPDF for text extraction
+import pandas as pd
+from openai import OpenAI
+
 
 # Function to remove non-ASCII characters
 def remove_non_ascii(text):
     # Normalize text to decompose characters with accents into ASCII-compatible characters
-    return unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
+    return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("utf-8")
+
 
 class DocumentExtractor:
     def __init__(self, pdf_path):
@@ -35,12 +38,13 @@ class DocumentExtractor:
             chat_completion = self.client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
                 model="gpt-4o-mini",
-                max_tokens=5700
+                max_tokens=5700,
             )
             return chat_completion.choices[0].message.content.strip()
         except Exception as e:
             print(f"Error during API call: {e}")
             return None
+
 
 class BillAuditFormExtractor(DocumentExtractor):
     def extract_info(self):
@@ -56,6 +60,7 @@ class BillAuditFormExtractor(DocumentExtractor):
         )
         return self._call_chatgpt(prompt)
 
+
 class LetterOfGuaranteeExtractor(DocumentExtractor):
     def extract_info(self):
         prompt = (
@@ -70,22 +75,13 @@ class LetterOfGuaranteeExtractor(DocumentExtractor):
         )
         return self._call_chatgpt(prompt)
 
+
 class InvoiceExtractor(DocumentExtractor):
     def extract_info(self):
         base_name = os.path.basename(self.pdf_path)
-        patient_id = base_name.split('_')[0].strip()  # Extract the first part of the filename
-        # prompt = (
-        #     "You are a document processing assistant. Extract information specifically for an Invoice.\n"
-        #     "Identify and extract the following details in CSV format with exactly these columns:\n"
-        #     "- Transaction_ID (Use 'NA' if no transaction ID is available)\n"
-        #     "- Drug/Services (This should include specific drugs, medications, warding details, medical procedures, scans, x-rays, etc., and should exclude generic terms such as 'Pharmacy Invoice' or 'Inpatient Invoice')\n"
-        #     "- Quantity associated with each item\n"
-        #     "- Date associated with each entry, in DD.MM.YYYY format (leave blank if not available)\n\n"
-        #     "Only include rows where 'Drug/Services' refers to a specific drug or service. Do not include entries with generic terms such as 'Pharmacy Invoice' or 'Inpatient Invoice' in the 'Drug/Services' column.\n\n"
-        #     "Provide the output in a CSV format with these columns in this order: Transaction_ID, Drug/Services, Quantity, Date.\n"
-        #     f"Here is the text:\n{self.text}\n"
-        #     "Return only the CSV content with no extra explanations or commentary."
-        # )
+        patient_id = base_name.split("_")[
+            0
+        ].strip()  # Extract the first part of the filename
 
         prompt = (
             "You are a document processing assistant. Extract information specifically for an Invoice.\n"
@@ -113,15 +109,19 @@ class InvoiceExtractor(DocumentExtractor):
         cleaned_response = []
         for line in response.splitlines():
             if line.count(",") >= 3:
-                parts = line.split(',')
+                parts = line.split(",")
 
                 transaction_id = parts[0].strip()
-                drug_name = ",".join(parts[1:-2]).strip()  # Join parts in case of extra commas in Drug/Services
+                drug_name = ",".join(
+                    parts[1:-2]
+                ).strip()  # Join parts in case of extra commas in Drug/Services
                 quantity = parts[-2].strip()
                 date_administered = parts[-1].strip()
 
                 # Enclose drug_name in quotes to avoid issues with internal commas
-                cleaned_line = f'{transaction_id},"{drug_name}",{quantity},{date_administered}'
+                cleaned_line = (
+                    f'{transaction_id},"{drug_name}",{quantity},{date_administered}'
+                )
                 cleaned_response.append(cleaned_line)
             else:
                 continue
@@ -138,10 +138,13 @@ class InvoiceExtractor(DocumentExtractor):
             print("Error parsing CSV response:", e)
             return None
 
+
 class MedicalReportExtractor(DocumentExtractor):
     def extract_info(self):
         base_name = os.path.basename(self.pdf_path)
-        patient_id = base_name.split('_')[0].strip()  # Extract the first part of the filename
+        patient_id = base_name.split("_")[
+            0
+        ].strip()  # Extract the first part of the filename
 
         prompt = (
             "You are a document processing assistant. Extract all overarching diagnoses from a Medical Report.\n"
@@ -171,7 +174,7 @@ class MedicalReportExtractor(DocumentExtractor):
             # Use the 'quotechar' parameter to handle any quotes around Diagnosis or Diagnosis Type
             csv_data = pd.read_csv(StringIO(response), quotechar='"')
             csv_data["patient_id"] = patient_id  # Add patient_id column
-             
+
             # Assign Diagnosis Type to "NA" if not found
             if "Diagnosis Type" not in csv_data.columns:
                 csv_data["Diagnosis Type"] = "NA"
@@ -193,15 +196,15 @@ class MedicalReportExtractor(DocumentExtractor):
             # Attempt to reformat and clean data if there are issues with parsing
             cleaned_response = []
             for line in response.splitlines():
-                parts = line.split(',')
+                parts = line.split(",")
 
                 # Ensure Diagnosis and Diagnosis Type are quoted if they contain commas
                 diagnosis = parts[0].strip()
                 diagnosis_type = parts[1].strip() if len(parts) > 1 else ""
-                
-                if ',' in diagnosis:
+
+                if "," in diagnosis:
                     diagnosis = f'"{diagnosis}"'
-                if ',' in diagnosis_type:
+                if "," in diagnosis_type:
                     diagnosis_type = f'"{diagnosis_type}"'
 
                 cleaned_line = f"{diagnosis},{diagnosis_type}"
@@ -212,7 +215,9 @@ class MedicalReportExtractor(DocumentExtractor):
             try:
                 csv_data = pd.read_csv(StringIO(cleaned_response), quotechar='"')
                 csv_data["patient_id"] = patient_id  # Add patient_id column
-                print("Medical Report Data successfully extracted and stored in DataFrame after cleaning.")
+                print(
+                    "Medical Report Data successfully extracted and stored in DataFrame after cleaning."
+                )
                 print(csv_data)  # Print the DataFrame for verification
                 return csv_data
             except pd.errors.ParserError as e:
@@ -229,7 +234,7 @@ def process_and_combine(pdfs_folder, output_folder):
     files_by_patient_id = defaultdict(list)
     for filename in os.listdir(pdfs_folder):
         if filename.endswith(".pdf"):
-            patient_id = filename.split('_')[0].strip()
+            patient_id = filename.split("_")[0].strip()
             files_by_patient_id[patient_id].append(filename)
 
     # Process each group of files with the same starting name (patient ID)
@@ -251,18 +256,40 @@ def process_and_combine(pdfs_folder, output_folder):
         if invoice_df is not None and medical_report_df is not None:
             # Ensure columns are correctly formatted
             invoice_df["patient_id"] = invoice_df["patient_id"].astype(str)
-            medical_report_df["patient_id"] = medical_report_df["patient_id"].astype(str)
-            invoice_df['Quantity'] = pd.to_numeric(invoice_df['Quantity'], errors='coerce').fillna(0).astype(int)
+            medical_report_df["patient_id"] = medical_report_df["patient_id"].astype(
+                str
+            )
+            invoice_df["Quantity"] = (
+                pd.to_numeric(invoice_df["Quantity"], errors="coerce")
+                .fillna(0)
+                .astype(int)
+            )
 
             # Merge on patient_id and save as a single CSV
-            combined_df = pd.merge(invoice_df, medical_report_df, on="patient_id", how="outer")
-            combined_df = combined_df[['patient_id', 'Transaction_ID', 'Date', 'Drug/Services', 'Quantity', 'Diagnosis', 'Diagnosis Type']]
-            
-            output_path = os.path.join(output_folder, f"{patient_id}_transformed_data.csv")
+            combined_df = pd.merge(
+                invoice_df, medical_report_df, on="patient_id", how="outer"
+            )
+            combined_df = combined_df[
+                [
+                    "patient_id",
+                    "Transaction_ID",
+                    "Date",
+                    "Drug/Services",
+                    "Quantity",
+                    "Diagnosis",
+                    "Diagnosis Type",
+                ]
+            ]
+
+            output_path = os.path.join(
+                output_folder, f"{patient_id}_transformed_data.csv"
+            )
             combined_df.to_csv(output_path, index=False)
             print(f"Combined data saved to {output_path}")
         else:
-            print(f"Skipping combination for patient ID {patient_id}: Missing either Invoice or Medical Report.")
+            print(
+                f"Skipping combination for patient ID {patient_id}: Missing either Invoice or Medical Report."
+            )
 
 
 # # Example usage for all PDFs in a folder
